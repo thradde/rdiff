@@ -179,7 +179,11 @@ int wmain(int argc, const wchar_t **argv)
 	const wchar_t *newfile;
 	const wchar_t *patchfile;
 
-#if 0
+#ifdef TEST_VPE
+	oldfile = L"F:\\tmp\\test rdiff\\vpee3270.dll";
+	newfile = L"F:\\tmp\\test rdiff\\vpee3271.dll";
+	patchfile = L"F:\\tmp\\test rdiff\\vpe.patch";
+#else
 	if (argc != 4)
 	{
 		printf("usage: rdiff <oldfile> <newfile> <patchfile>\n");
@@ -188,10 +192,6 @@ int wmain(int argc, const wchar_t **argv)
 	oldfile = argv[1];
 	newfile = argv[2];
 	patchfile = argv[3];
-#else
-	oldfile = L"F:\\tmp\\test rdiff\\vpee3270.dll";
-	newfile = L"F:\\tmp\\test rdiff\\vpee3271.dll";
-	patchfile = L"F:\\tmp\\test rdiff\\vpe.patch";
 #endif
 
 	uint64_t old_size, new_size;
