@@ -25,13 +25,17 @@ public:
 	uint32_t	m_nVersion;		// version of patch file
 	uint32_t	m_nOffsetSize;	// 4 = offsets and sizes are 4 byte, 8 otherwise
 	uint64_t	m_nFileSize;	// size of file to create
+	checksum_t	m_nOldChecksum;	// checksum of old file
+	checksum_t	m_nNewChecksum;	// checksum of new file
 
 public:
-	CPatchFileHeader(uint64_t file_size, uint32_t offset_size)
+	CPatchFileHeader(uint64_t file_size, uint32_t offset_size, checksum_t chk_old, checksum_t chk_new)
 		: m_nMagic(PATCH_FILE_MAGIC)
 		, m_nVersion(PATCH_FILE_VERSION)
 		, m_nFileSize(file_size)
 		, m_nOffsetSize(offset_size)
+		, m_nOldChecksum(chk_old)
+		, m_nNewChecksum(chk_new)
 	{
 	}
 
@@ -40,6 +44,8 @@ public:
 		, m_nVersion(0)
 		, m_nFileSize(0)
 		, m_nOffsetSize(0)
+		, m_nOldChecksum(0)
+		, m_nNewChecksum(0)
 	{
 	}
 };

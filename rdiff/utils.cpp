@@ -25,7 +25,20 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "\source_andere\xxHash\xxh3.h"
 #include "utils.h"
+
+
+ // Compute Checksum for a block
+ // len in bytes
+checksum_t ComputeChecksum(const char *buffer, size_t len)
+{
+	checksum_t hash = XXH3_64bits(buffer, len);
+	//checksum_t hash = XXH3_128bits(buffer, len);
+
+	return hash;
+}
+
 
 char *ReadFile(const wchar_t *file_name, uint64_t &size, uint64_t min_size)
 {

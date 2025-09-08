@@ -65,7 +65,7 @@ The code to create the new file from the old file and the patch file is very sim
 		k += size;
 	}
 
-The whole code of rpatch.exe is only 120 lines.
+The whole code of rpatch.exe is only 135 lines.
 
 Let me tell an observation: comparing 2 versions of my own software, which had only minor changes from one version to the next, I expected to identify huge similar blocks. But no, for identical blocks, block sizes are 30 - 100 bytes in average only. It seems that there are many jumps to absolute addresses, which are all changed in the new version. But even then, in my case the patch file is 268 KB in size and the 
 original file 2,715 KB, so the patch file is only about 10% in size.

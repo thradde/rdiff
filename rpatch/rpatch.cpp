@@ -93,6 +93,14 @@ int wmain(int argc, const wchar_t **argv)
 		exit(1);
 	}
 
+	// verify checksum of old file
+	if (header.m_nOldChecksum != ComputeChecksum(oldbuf, old_size))
+	{
+		wprintf(L"checksum mismatch (original file)\n");
+		exit(1);
+	}
+
+	// create new file
 	uint64_t new_size = header.m_nFileSize;
 	char *newbuf = (char *)malloc(new_size);
 
@@ -121,6 +129,14 @@ int wmain(int argc, const wchar_t **argv)
 
 	fclose(fh);
 
+	// verify checksum of new file
+	if (header.m_nNewChecksum != ComputeChecksum(newbuf, new_size))
+	{
+		wprintf(L"checksum mismatch (new file)\n");
+		exit(1);
+	}
+
+	// write new file
 	fh = _wfopen(newfile, L"wb");
 	if (!fh)
 	{

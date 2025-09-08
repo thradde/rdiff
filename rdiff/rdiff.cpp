@@ -94,7 +94,7 @@ The code to create the new file from the old file and the patch file is very sim
 		k += size;
 	}
 
-The whole code of rpatch.exe is only 120 lines.
+The whole code of rpatch.exe is only 135 lines.
 
 Let me tell an observation: comparing 2 versions of my own software, which had only minor changes from 
 one version to the next, I expected to identify huge similar blocks. But no, for identical blocks, block sizes 
@@ -113,13 +113,10 @@ original file 2,715 KB, so the patch file is only about 10% in size.
 #include <list>
 #include <map>
 
-#include "\source_andere\xxHash\xxh3.h"
 #include "utils.h"
 #include "PatchFileHeader.h"
 
 //#define VERBOSE
-
-typedef uint64_t checksum_t;
 
 class CSearchNode
 {
@@ -162,17 +159,6 @@ typedef std::list<CBlock>::iterator TBlockListIter;
 constexpr size_t BlockSize = 16;
 
 
-// Compute Checksum for a block
-// len in bytes
-checksum_t ComputeChecksum(const char *buffer, size_t len)
-{
-	checksum_t hash = XXH3_64bits(buffer, len);
-	//checksum_t hash = XXH3_128bits(buffer, len);
-
-	return hash;
-}
-
-
 int wmain(int argc, const wchar_t **argv)
 {
 	const wchar_t *oldfile;
@@ -194,9 +180,14 @@ int wmain(int argc, const wchar_t **argv)
 	patchfile = argv[3];
 #endif
 
+	// read files into memory
 	uint64_t old_size, new_size;
 	char *oldbuf = ReadFile(oldfile, old_size, BlockSize);
 	char *newbuf = ReadFile(newfile, new_size, BlockSize);
+
+	// compute checksums
+	checksum_t chk_old = ComputeChecksum(oldbuf, old_size);
+	checksum_t chk_new = ComputeChecksum(newbuf, new_size);
 
 	// compute search map for old file
 	wprintf(L"pass 1, computing search map\n");
@@ -298,7 +289,7 @@ int wmain(int argc, const wchar_t **argv)
 		exit(1);
 	}
 
-	CPatchFileHeader header(new_size, sizeof(TOffset));
+	CPatchFileHeader header(new_size, sizeof(TOffset), chk_old, chk_new);
 	fwrite(&header, 1, sizeof(header), fh);
 
 	k = 0;
